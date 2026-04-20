@@ -1,0 +1,111 @@
+.state-machine-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.smb-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.smb-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.smb-step-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.smb-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.smb-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.smb-dot.done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.smb-dot.active {
+  background: var(--blue-glow);
+  border-color: var(--blue);
+  color: var(--blue);
+  animation: pulse-ring 2s ease infinite;
+}
+
+.smb-dot-icon {
+  font-size: 14px;
+}
+
+.smb-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.smb-step-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.smb-step.active .smb-step-label {
+  color: var(--blue);
+}
+
+.smb-step.done .smb-step-label {
+  color: var(--accent);
+}
+
+.smb-step-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.smb-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--border-light);
+  margin: 0 8px;
+  border-radius: 2px;
+  transition: background 0.5s ease;
+}
+
+.smb-connector.done {
+  background: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .smb-step-desc { display: none; }
+  .smb-dot { width: 30px; height: 30px; }
+  .smb-step-label { font-size: 11px; }
+}

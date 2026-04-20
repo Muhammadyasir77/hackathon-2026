@@ -1,0 +1,184 @@
+/* ── Shared Overlay (used by both modals) ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 9, 20, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ── User Setup Modal ── */
+.usm-modal {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.usm-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.usm-icon {
+  font-size: 36px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--accent-glow), var(--blue-glow));
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usm-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.usm-sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.usm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Field */
+.usm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.usm-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.usm-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+  width: 100%;
+}
+.usm-input:focus {
+  border-color: var(--accent);
+  background: rgba(0, 201, 167, 0.04);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.usm-input.has-error {
+  border-color: var(--red);
+}
+.usm-input::placeholder {
+  color: var(--text-muted);
+}
+
+.usm-error {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: -2px;
+}
+
+/* Roles */
+.usm-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.usm-role-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  transition: var(--transition);
+}
+.usm-role-card:hover {
+  border-color: var(--border-light);
+  background: rgba(255,255,255,0.06);
+}
+.usm-role-card.selected {
+  border-color: var(--accent);
+  background: rgba(0, 201, 167, 0.06);
+}
+
+.usm-role-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.usm-role-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.usm-role-check {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Actions */
+.usm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+/* Note */
+.usm-note {
+  margin-top: 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}

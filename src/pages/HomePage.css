@@ -148,6 +148,13 @@
   color: var(--text-sub);
 }
 
+.section-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .problems-count-badge {
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--border-light);
@@ -156,6 +163,10 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--text-sub);
+  flex-shrink: 0;
+}
+
+.post-problem-btn {
   flex-shrink: 0;
 }
 
@@ -227,9 +238,49 @@
   padding: 0 2px;
 }
 
+/* ── Success Toast ── */
+.post-success-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: var(--card);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.1);
+  z-index: 300;
+  min-width: 300px;
+  max-width: 480px;
+  white-space: nowrap;
+}
+
+.toast-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.post-success-toast strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 2px;
+}
+
+.toast-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
 @media (max-width: 640px) {
   .problems-grid { grid-template-columns: 1fr; }
   .trust-loop-steps { gap: 6px; }
   .tl-step { padding: 8px 10px; }
   .tl-label { font-size: 10px; }
+  .section-header-right { flex-wrap: wrap; }
+  .post-success-toast { min-width: calc(100vw - 48px); max-width: calc(100vw - 48px); }
 }

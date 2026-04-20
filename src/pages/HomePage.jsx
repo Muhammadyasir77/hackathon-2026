@@ -1,8 +1,19 @@
-import { problems } from '../data/problems'
+import { useState } from 'react'
+import { useApp } from '../context/AppContext'
 import ProblemCard from '../components/ProblemCard'
+import PostProblemModal from '../components/PostProblemModal'
 import './HomePage.css'
 
 export default function HomePage() {
+  const { problems, user } = useApp()
+  const [showPostModal, setShowPostModal] = useState(false)
+  const [successToast, setSuccessToast] = useState(null)
+
+  const handlePosted = (problem) => {
+    setSuccessToast(problem.title)
+    setTimeout(() => setSuccessToast(null), 4000)
+  }
+
   return (
     <div className="home-page">
       {/* Hero */}
@@ -51,14 +62,27 @@ export default function HomePage() {
               <h2 className="section-heading">Active Community Problems</h2>
               <p className="section-sub">Click any problem to see the full trust flow in action</p>
             </div>
-            <div className="problems-count-badge">
-              <span>{problems.length} Problems</span>
+            <div className="section-header-right">
+              <div className="problems-count-badge">
+                <span>{problems.length} Problems</span>
+              </div>
+              {/* ── FEATURE 1: Post Problem Button ── */}
+              <button
+                className="btn btn-primary post-problem-btn"
+                onClick={() => setShowPostModal(true)}
+                id="btn-post-problem"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Post Problem
+              </button>
             </div>
           </div>
 
           <div className="problems-grid">
             {problems.map((p, i) => (
-              <div key={p.id} style={{ animationDelay: `${i * 0.1}s` }}>
+              <div key={p.id} style={{ animationDelay: `${Math.min(i, 5) * 0.08}s` }}>
                 <ProblemCard problem={p} />
               </div>
             ))}
@@ -93,6 +117,26 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Post Problem Modal ── */}
+      {showPostModal && (
+        <PostProblemModal
+          onClose={() => setShowPostModal(false)}
+          onPosted={handlePosted}
+        />
+      )}
+
+      {/* ── Success Toast ── */}
+      {successToast && (
+        <div className="post-success-toast animate-fade-up">
+          <span className="toast-icon">✅</span>
+          <div>
+            <strong>Problem Posted!</strong>
+            <p className="toast-sub">"{successToast.slice(0, 50)}{successToast.length > 50 ? '...' : ''}" is now live</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+

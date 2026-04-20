@@ -683,6 +683,15 @@
 .donor-status.escrow { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
 .donor-status.paid { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
 
+/* Empty donors state (new user-posted problems) */
+.no-donors-msg {
+  padding: 14px 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+
 /* ── SECTION E ── */
 .before-after-grid {
   display: grid;

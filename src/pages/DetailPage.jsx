@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { getProblemById } from '../data/problems'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useApp } from '../context/AppContext'
 import StateMachineBar from '../components/StateMachineBar'
 import './DetailPage.css'
 
 export default function DetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const problem = getProblemById(id)
+  const { problems } = useApp()
+  const problem = problems.find((p) => String(p.id) === String(id))
 
   // ── State Machine ──
   const [taskStatus, setTaskStatus] = useState(
@@ -421,16 +422,22 @@ export default function DetailPage() {
                 {/* Donor Summary */}
                 <div className="donor-summary">
                   <p className="donor-summary-label">Donors</p>
-                  {problem.donations.map((d, i) => (
-                    <div key={i} className="donor-row">
-                      <div className="donor-avatar">{d.donor[0]}</div>
-                      <span className="donor-name">{d.donor}</span>
-                      <span className="donor-amount">Rs. {d.amount.toLocaleString()}</span>
-                      <span className={`donor-status ${ledgerPaid ? 'paid' : 'escrow'}`}>
-                        {ledgerPaid ? 'PAID' : d.status}
-                      </span>
+                  {problem.donations && problem.donations.length > 0 ? (
+                    problem.donations.map((d, i) => (
+                      <div key={i} className="donor-row">
+                        <div className="donor-avatar">{d.donor[0]}</div>
+                        <span className="donor-name">{d.donor}</span>
+                        <span className="donor-amount">Rs. {d.amount.toLocaleString()}</span>
+                        <span className={`donor-status ${ledgerPaid ? 'paid' : 'escrow'}`}>
+                          {ledgerPaid ? 'PAID' : d.status}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-donors-msg">
+                      <span>💡 No donors yet — be the first to fund this problem</span>
                     </div>
-                  ))}
+                  )}
                 </div>
               </section>
 
@@ -544,23 +551,29 @@ function InlineLedger({ problem, ledgerPaid, taskStatus }) {
           <span>Status</span>
           <span>Time</span>
         </div>
-        {problem.ledgerEntries.map((entry) => {
-          const tc = typeConfig[entry.type] || {}
-          const status = getEntryStatus(entry)
-          return (
-            <div key={entry.id} className={`lt-row ${status === 'PAID' ? 'lt-row-paid' : ''}`}>
-              <span className="lt-from">{entry.from}</span>
-              <span className="lt-arrow">→</span>
-              <span className="lt-to">{entry.to}</span>
-              <span className="lt-amount">Rs. {entry.amount.toLocaleString()}</span>
-              <span className="lt-type" style={{ color: tc.color }}>
-                {tc.icon} {tc.label}
-              </span>
-              <span className={`lt-status ${statusCls[status] || ''}`}>{status}</span>
-              <span className="lt-time">{entry.time}</span>
-            </div>
-          )
-        })}
+        {problem.ledgerEntries && problem.ledgerEntries.length > 0 ? (
+          problem.ledgerEntries.map((entry) => {
+            const tc = typeConfig[entry.type] || {}
+            const status = getEntryStatus(entry)
+            return (
+              <div key={entry.id} className={`lt-row ${status === 'PAID' ? 'lt-row-paid' : ''}`}>
+                <span className="lt-from">{entry.from}</span>
+                <span className="lt-arrow">→</span>
+                <span className="lt-to">{entry.to}</span>
+                <span className="lt-amount">Rs. {entry.amount.toLocaleString()}</span>
+                <span className="lt-type" style={{ color: tc.color }}>
+                  {tc.icon} {tc.label}
+                </span>
+                <span className={`lt-status ${statusCls[status] || ''}`}>{status}</span>
+                <span className="lt-time">{entry.time}</span>
+              </div>
+            )
+          })
+        ) : (
+          <div className="lt-row" style={{ gridColumn: '1/-1', color: 'var(--text-muted)', padding: '20px 16px', fontSize: 13 }}>
+            📋 No ledger entries yet — entries appear once donors fund this problem
+          </div>
+        )}
       </div>
 
       {taskStatus === 'COMPLETED' && (

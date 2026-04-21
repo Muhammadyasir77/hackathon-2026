@@ -7,7 +7,7 @@ import './DetailPage.css'
 export default function DetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { problems } = useApp()
+  const { problems, completeTask } = useApp()
   const problem = problems.find((p) => String(p.id) === String(id))
 
   // ── State Machine ──
@@ -64,6 +64,10 @@ export default function DetailPage() {
       setProgress(100)
       setVerifyMsg('Verified Successfully')
       setLedgerPaid(true)
+
+      // ── Persist to global state: mark COMPLETED + append PAYMENT ledger entry ──
+      const payout = Math.round((problem.funded || 0) * 0.5)
+      completeTask(problem.id, problem.volunteer?.name || 'Volunteer', payout)
     }, 3000)
   }
 
@@ -492,6 +496,7 @@ function InlineLedger({ problem, ledgerPaid, taskStatus }) {
     DEPOSIT: { icon: '💰', label: 'Deposit', color: 'var(--accent)' },
     RESERVE: { icon: '🔒', label: 'Reserved', color: 'var(--amber)' },
     RELEASE: { icon: '💸', label: 'Released', color: 'var(--green)' },
+    PAYMENT: { icon: '✅', label: 'Payment', color: 'var(--green)' },
     BALANCE: { icon: '🏦', label: 'Pool Balance', color: 'var(--blue)' },
   }
 
@@ -504,6 +509,7 @@ function InlineLedger({ problem, ledgerPaid, taskStatus }) {
     ESCROW: 'le-status-escrow',
     RESERVED: 'le-status-reserved',
     PAID: 'le-status-paid',
+    PAYMENT: 'le-status-paid',  // payment entries get the same green badge
     PENDING: 'le-status-pending',
     POOL: 'le-status-pool',
   }

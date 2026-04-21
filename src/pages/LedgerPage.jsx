@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { problems } from '../data/problems'
+import { useApp } from '../context/AppContext'
 import './LedgerPage.css'
 
 const TYPE_CONFIG = {
   DEPOSIT: { icon: '💰', label: 'Deposit', color: 'var(--accent)' },
   RESERVE: { icon: '🔒', label: 'Reserved', color: 'var(--amber)' },
   RELEASE: { icon: '💸', label: 'Released', color: 'var(--green)' },
+  PAYMENT: { icon: '✅', label: 'Payment', color: 'var(--green)' },
   BALANCE: { icon: '🏦', label: 'Pool Balance', color: 'var(--blue)' },
 }
 
@@ -13,18 +14,29 @@ const STATUS_CLS = {
   ESCROW: 'ls-escrow',
   RESERVED: 'ls-reserved',
   PAID: 'ls-paid',
+  PAYMENT: 'ls-paid',   // payment entries from completeTask share the paid style
   PENDING: 'ls-pending',
   POOL: 'ls-pool',
 }
 
 export default function LedgerPage() {
-  const [selectedProblem, setSelectedProblem] = useState(problems[0].id)
-  const problem = problems.find((p) => p.id === selectedProblem)
-  const isCompleted = problem.displayStatus === 'Completed'
+  const { problems, totalFunds, totalProblems } = useApp()
+  const [selectedProblem, setSelectedProblem] = useState(() => problems[0]?.id ?? null)
 
-  const totalFunded = problems.reduce((s, p) => s + p.funded, 0)
-  const totalJoined = problems.reduce((s, p) => s + p.joinedCount, 0)
-  const completedCount = problems.filter((p) => p.displayStatus === 'Completed').length
+  // Always resolve from live problems (state may have changed since mount)
+  const problem = problems.find((p) => p.id === selectedProblem) ?? problems[0]
+
+  if (!problems.length) {
+    return (
+      <div className="ledger-page"><div className="container" style={{ paddingTop: 60, textAlign: 'center', color: 'var(--text-muted)' }}>
+        <p>No problems posted yet. Post one on the home page!</p>
+      </div></div>
+    )
+  }
+
+  const isCompleted = problem.displayStatus === 'Completed' || problem.status === 'COMPLETED'
+  const totalJoined = problems.reduce((s, p) => s + (p.joinedCount || 0), 0)
+  const completedCount = problems.filter((p) => p.displayStatus === 'Completed' || p.status === 'COMPLETED').length
 
   return (
     <div className="ledger-page">
@@ -49,14 +61,14 @@ export default function LedgerPage() {
           <div className="ps-card">
             <div className="ps-icon">💰</div>
             <div>
-              <p className="ps-value">Rs. {totalFunded.toLocaleString()}</p>
+              <p className="ps-value">Rs. {totalFunds.toLocaleString()}</p>
               <p className="ps-label">Total Funded</p>
             </div>
           </div>
           <div className="ps-card">
             <div className="ps-icon">🧩</div>
             <div>
-              <p className="ps-value">{problems.length}</p>
+              <p className="ps-value">{totalProblems}</p>
               <p className="ps-label">Problems Posted</p>
             </div>
           </div>

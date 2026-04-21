@@ -10,7 +10,7 @@ export default function Header({ onOpenSetup }) {
   const handleShare = () => {
     const url = window.location.href
     if (navigator.share) {
-      navigator.share({ title: 'CivicTrust', url })
+      navigator.share({ title: 'FixLedger', url })
     } else {
       navigator.clipboard.writeText(url).then(() => {
         alert('Link copied to clipboard!')
@@ -24,12 +24,15 @@ export default function Header({ onOpenSetup }) {
         {/* Brand */}
         <Link to="/" className="header-brand">
           <div className="brand-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-              <path d="M12 12l9-5M12 12v10M12 12L3 7" stroke="currentColor" strokeWidth="1.5"/>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              {/* Ledger lines */}
+              <rect x="4" y="5" width="16" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+              <rect x="4" y="9" width="10" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+              {/* Checkmark */}
+              <path d="M4 16l4 4 8-8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <span className="brand-name">CivicTrust</span>
+          <span className="brand-name">FixLedger</span>
           <span className="brand-tag">BETA</span>
         </Link>
 

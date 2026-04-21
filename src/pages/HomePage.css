@@ -45,11 +45,177 @@
   mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
 }
 
+/* ── Hero split layout ── */
+.hero-split {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-copy {
+  max-width: 600px;
+}
+
+/* keep old .hero-content alias for safety */
 .hero-content {
   position: relative;
   z-index: 1;
   max-width: 780px;
 }
+
+/* CTA row */
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-post-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  padding: 13px 24px;
+}
+
+.hero-cta-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ── Hero Stats Panel ── */
+.hero-stats-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.hsp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.hsp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-ring 2s ease infinite;
+  flex-shrink: 0;
+}
+
+.hsp-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hsp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hsp-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: var(--transition);
+}
+.hsp-card:hover { background: rgba(255,255,255,0.07); }
+
+.hsp-card-accent {
+  border-color: rgba(0,201,167,0.25);
+  background: rgba(0,201,167,0.06);
+  grid-column: 1 / -1;
+}
+
+.hsp-card-green {
+  border-color: rgba(16,185,129,0.25);
+  background: rgba(16,185,129,0.05);
+}
+
+.hsp-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.hsp-card-accent .hsp-card-value { color: var(--accent); font-size: 26px; }
+.hsp-card-green  .hsp-card-value { color: var(--green); }
+
+.hsp-card-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Mini trust flow inside panel */
+.hsp-trust-loop {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.hsp-tl-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.hsp-tl-steps {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.hsp-tl-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.hsp-tl-step {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.hsp-tl-arrow {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 0 1px;
+}
+
 
 .hero-badge {
   display: inline-flex;
@@ -276,6 +442,16 @@
   color: var(--text-sub);
 }
 
+@media (max-width: 1024px) {
+  .hero-split { grid-template-columns: 1fr 340px; gap: 32px; }
+}
+
+@media (max-width: 900px) {
+  .hero-split { grid-template-columns: 1fr; }
+  .hero-stats-panel { max-width: 540px; }
+  .hero-copy { max-width: 100%; }
+}
+
 @media (max-width: 640px) {
   .problems-grid { grid-template-columns: 1fr; }
   .trust-loop-steps { gap: 6px; }
@@ -283,4 +459,7 @@
   .tl-label { font-size: 10px; }
   .section-header-right { flex-wrap: wrap; }
   .post-success-toast { min-width: calc(100vw - 48px); max-width: calc(100vw - 48px); }
+  .hsp-grid { grid-template-columns: 1fr 1fr; }
+  .hsp-card-accent { grid-column: 1 / -1; }
+  .hero-cta-row { gap: 12px; }
 }

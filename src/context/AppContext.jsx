@@ -55,15 +55,53 @@ export function AppProvider({ children }) {
     setProblems((prev) => [newProblem, ...prev])
   }
 
-  // Expose a way to update a single problem in-place (e.g. after verification)
+  // Update a single problem in-place (generic patch)
   const updateProblem = (id, patch) => {
     setProblems((prev) =>
       prev.map((p) => (p.id === id ? { ...p, ...patch } : p))
     )
   }
 
+  // Mark a problem COMPLETED and append a PAYMENT ledger entry
+  const completeTask = (id, volunteerName, amount) => {
+    const ts = new Date().toLocaleString('en-PK', {
+      hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short',
+    })
+    const paymentEntry = {
+      id: `pay-${Date.now()}`,
+      from: 'Escrow Pool',
+      to: `${volunteerName} (Volunteer)`,
+      amount,
+      type: 'PAYMENT',
+      status: 'PAID',
+      time: ts,
+    }
+    setProblems((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              displayStatus: 'Completed',
+              status: 'COMPLETED',
+              ledgerEntries: [...(p.ledgerEntries || []), paymentEntry],
+            }
+          : p
+      )
+    )
+  }
+
+  // Derived stats — computed fresh every render so consumers always get live data
+  const totalProblems = problems.length
+  const totalFunds = problems.reduce((sum, p) => sum + (p.funded || 0), 0)
+
   return (
-    <AppContext.Provider value={{ user, setUser, problems, addProblem, updateProblem }}>
+    <AppContext.Provider
+      value={{
+        user, setUser,
+        problems, addProblem, updateProblem, completeTask,
+        totalProblems, totalFunds,
+      }}
+    >
       {children}
     </AppContext.Provider>
   )

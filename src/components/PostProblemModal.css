@@ -260,3 +260,39 @@
   .ppm-form { padding: 20px; }
   .ppm-header { padding: 18px 20px 16px; }
 }
+
+/* ── Required Fund field ── */
+.ppm-fund-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ppm-fund-prefix {
+  position: absolute;
+  left: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ppm-fund-input {
+  padding-left: 44px !important;
+}
+
+/* Hide browser number spinners */
+.ppm-fund-input::-webkit-outer-spin-button,
+.ppm-fund-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ppm-fund-input[type=number] { -moz-appearance: textfield; }
+
+.ppm-fund-hint {
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(0, 201, 167, 0.06);
+  border: 1px solid rgba(0, 201, 167, 0.15);
+  border-radius: 6px;
+  padding: 5px 10px;
+  margin-top: 2px;
+}

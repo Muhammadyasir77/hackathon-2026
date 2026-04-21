@@ -14,6 +14,7 @@ export default function PostProblemModal({ onClose, onPosted }) {
     description: '',
     category: 'Environment',
     location: '',
+    requiredFund: '',
   })
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
@@ -44,14 +45,15 @@ export default function PostProblemModal({ onClose, onPosted }) {
     if (!form.title.trim()) errs.title = 'Title is required'
     if (!form.description.trim()) errs.description = 'Description is required'
     if (!form.location.trim()) errs.location = 'Location is required'
+    const fundNum = Number(form.requiredFund)
+    if (!form.requiredFund || isNaN(fundNum) || fundNum <= 0)
+      errs.requiredFund = 'Enter a valid fund amount (e.g. 2500)'
     if (!imagePreview) errs.image = 'Before image is required'
     return errs
   }
 
-  // ── Generate realistic mock fund data for a new problem ──
-  const buildFundData = (poster) => {
-    const fundedAmounts = [1500, 2000, 2500, 3000, 3500]
-    const funded = fundedAmounts[Math.floor(Math.random() * fundedAmounts.length)]
+  // Build ledger data from the user-entered fund amount
+  const buildFundData = (funded, poster) => {
     const half = Math.round(funded * 0.5)
     const donorA = `Donor_${String.fromCharCode(65 + Math.floor(Math.random() * 10))}`
     const donorB = `Donor_${String.fromCharCode(75 + Math.floor(Math.random() * 10))}`
@@ -61,17 +63,16 @@ export default function PostProblemModal({ onClose, onPosted }) {
     const ts = new Date().toLocaleString('en-PK', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })
 
     return {
-      funded,
       donations: [
         { donor: donorA, amount: amtA, status: 'ESCROW', time: 'Just now' },
         { donor: donorB, amount: amtB, status: 'ESCROW', time: 'Just now' },
       ],
       ledgerEntries: [
-        { id: 'l1', from: donorA, to: 'Escrow Pool', amount: amtA, type: 'DEPOSIT', status: 'ESCROW', time: ts },
-        { id: 'l2', from: donorB, to: 'Escrow Pool', amount: amtB, type: 'DEPOSIT', status: 'ESCROW', time: ts },
-        { id: 'l3', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RESERVE', status: 'RESERVED', time: 'Task taken' },
-        { id: 'l4', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RELEASE', status: 'PENDING', time: 'After verification' },
-        { id: 'l5', from: 'Escrow Pool', to: 'Remaining Pool', amount: funded - half, type: 'BALANCE', status: 'POOL', time: 'Ongoing' },
+        { id: 'l1', from: donorA,   to: 'Escrow Pool',             amount: amtA,          type: 'DEPOSIT',  status: 'ESCROW',    time: ts },
+        { id: 'l2', from: donorB,   to: 'Escrow Pool',             amount: amtB,          type: 'DEPOSIT',  status: 'ESCROW',    time: ts },
+        { id: 'l3', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RESERVE',  status: 'RESERVED', time: 'Task taken' },
+        { id: 'l4', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RELEASE',  status: 'PENDING',  time: 'After verification' },
+        { id: 'l5', from: 'Escrow Pool', to: 'Remaining Pool',     amount: funded - half, type: 'BALANCE',  status: 'POOL',     time: 'Ongoing' },
       ],
     }
   }
@@ -85,7 +86,8 @@ export default function PostProblemModal({ onClose, onPosted }) {
 
     setTimeout(() => {
       const volunteerName = user?.name || 'TBD'
-      const { funded, donations, ledgerEntries } = buildFundData(volunteerName)
+      const funded = Math.round(Number(form.requiredFund))
+      const { donations, ledgerEntries } = buildFundData(funded, volunteerName)
 
       const newProblem = {
         id: generateId(),
@@ -94,9 +96,9 @@ export default function PostProblemModal({ onClose, onPosted }) {
         story: `A community member reported: "${form.description.trim()}"`,
         location: form.location.trim(),
         category: form.category,
-        beforeImage: imagePreview,           // base64 — persists in localStorage
+        beforeImage: imagePreview,
         afterImagePlaceholder: 'https://picsum.photos/seed/after-clean/700/420',
-        funded,                              // generated realistic mock amount
+        funded,                        // ← user-entered value
         totalGoal: funded,
         joinedCount: 0,
         displayStatus: 'Active',
@@ -107,8 +109,8 @@ export default function PostProblemModal({ onClose, onPosted }) {
           rating: 0,
           completedTasks: 0,
         },
-        donations,                           // generated donor entries
-        ledgerEntries,                       // generated ledger rows
+        donations,
+        ledgerEntries,
         postedBy: volunteerName,
         postedAt: new Date().toISOString(),
       }
@@ -199,6 +201,34 @@ export default function PostProblemModal({ onClose, onPosted }) {
               />
               {errors.location && <p className="ppm-error">{errors.location}</p>}
             </div>
+          </div>
+
+          {/* Required Fund */}
+          <div className="ppm-field">
+            <label className="ppm-label" htmlFor="ppm-fund">
+              💰 Required Fund (Rs.) *
+            </label>
+            <div className="ppm-fund-wrap">
+              <span className="ppm-fund-prefix">Rs.</span>
+              <input
+                id="ppm-fund"
+                className={`ppm-input ppm-fund-input ${errors.requiredFund ? 'has-error' : ''}`}
+                type="number"
+                min="1"
+                step="1"
+                placeholder="e.g. 5000"
+                value={form.requiredFund}
+                onChange={(e) => set('requiredFund', e.target.value)}
+              />
+            </div>
+            {errors.requiredFund && <p className="ppm-error">{errors.requiredFund}</p>}
+            {form.requiredFund && Number(form.requiredFund) > 0 && (
+              <p className="ppm-fund-hint">
+                Escrow: Rs. {Math.round(Number(form.requiredFund) * 0.5).toLocaleString()} volunteer payout
+                &nbsp;+&nbsp;
+                Rs. {Math.round(Number(form.requiredFund) * 0.5).toLocaleString()} remaining pool
+              </p>
+            )}
           </div>
 
           {/* Before Image */}

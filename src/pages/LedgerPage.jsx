@@ -3,20 +3,23 @@ import { useApp } from '../context/AppContext'
 import './LedgerPage.css'
 
 const TYPE_CONFIG = {
-  DEPOSIT: { icon: '💰', label: 'Deposit', color: 'var(--accent)' },
-  RESERVE: { icon: '🔒', label: 'Reserved', color: 'var(--amber)' },
-  RELEASE: { icon: '💸', label: 'Released', color: 'var(--green)' },
-  PAYMENT: { icon: '✅', label: 'Payment', color: 'var(--green)' },
-  BALANCE: { icon: '🏦', label: 'Pool Balance', color: 'var(--blue)' },
+  DEPOSIT:    { icon: '💰', label: 'Deposit',     color: 'var(--accent)' },
+  DONATION:   { icon: '📚', label: 'Donation',    color: 'var(--green)'  },
+  RESERVE:    { icon: '🔒', label: 'Reserved',    color: 'var(--amber)'  },
+  RELEASE:    { icon: '💸', label: 'Released',    color: 'var(--green)'  },
+  RELEASE_30: { icon: '💸', label: '30% Release', color: 'var(--green)'  },
+  RELEASE_70: { icon: '✅', label: '70% Release', color: 'var(--green)'  },
+  PAYMENT:    { icon: '✅', label: 'Payment',     color: 'var(--green)'  },
+  BALANCE:    { icon: '🏦', label: 'Pool Balance',color: 'var(--blue)'   },
 }
 
 const STATUS_CLS = {
-  ESCROW: 'ls-escrow',
+  ESCROW:   'ls-escrow',
   RESERVED: 'ls-reserved',
-  PAID: 'ls-paid',
-  PAYMENT: 'ls-paid',   // payment entries from completeTask share the paid style
-  PENDING: 'ls-pending',
-  POOL: 'ls-pool',
+  PAID:     'ls-paid',
+  PAYMENT:  'ls-paid',
+  PENDING:  'ls-pending',
+  POOL:     'ls-pool',
 }
 
 export default function LedgerPage() {
@@ -34,9 +37,14 @@ export default function LedgerPage() {
     )
   }
 
-  const isCompleted = problem.displayStatus === 'Completed' || problem.status === 'COMPLETED'
-  const totalJoined = problems.reduce((s, p) => s + (p.joinedCount || 0), 0)
+  const isCompleted  = problem.displayStatus === 'Completed' || problem.status === 'COMPLETED'
+  const isInProgress = (problem.volunteers?.length > 0) && !isCompleted
+  const releasedFund = problem.releasedFund || 0
+  const reservedFund = problem.reservedFund ?? problem.funded
+  const totalJoined  = problems.reduce((s, p) => s + (p.joinedCount || 0), 0)
   const completedCount = problems.filter((p) => p.displayStatus === 'Completed' || p.status === 'COMPLETED').length
+  // Primary volunteer for display
+  const primaryVol = problem.volunteers?.[0]
 
   return (
     <div className="ledger-page">
@@ -125,25 +133,27 @@ export default function LedgerPage() {
           {/* Summary Row */}
           <div className="lmc-summary">
             <div className="lmc-sum-item">
-              <span className="sum-label">Total Raised</span>
+              <span className="sum-label">Required Fund</span>
               <span className="sum-value accent">Rs. {problem.funded.toLocaleString()}</span>
             </div>
             <div className="lmc-sum-divider" />
             <div className="lmc-sum-item">
-              <span className="sum-label">Volunteer Payout</span>
-              <span className={`sum-value ${isCompleted ? 'green' : ''}`}>
-                Rs. {(problem.funded * 0.5).toLocaleString()}
+              <span className="sum-label">🔒 Reserved</span>
+              <span className={`sum-value ${isInProgress ? 'amber' : ''}`}>
+                Rs. {reservedFund.toLocaleString()}
               </span>
             </div>
             <div className="lmc-sum-divider" />
             <div className="lmc-sum-item">
-              <span className="sum-label">Remaining Pool</span>
-              <span className="sum-value blue">Rs. {(problem.funded * 0.5).toLocaleString()}</span>
+              <span className="sum-label">✅ Released</span>
+              <span className={`sum-value ${releasedFund > 0 ? 'green' : ''}`}>
+                Rs. {releasedFund.toLocaleString()}
+              </span>
             </div>
             <div className="lmc-sum-divider" />
             <div className="lmc-sum-item">
               <span className="sum-label">Donors</span>
-              <span className="sum-value">{problem.donations.length}</span>
+              <span className="sum-value">{problem.donations?.length ?? 0}</span>
             </div>
           </div>
 
@@ -160,20 +170,28 @@ export default function LedgerPage() {
               <div className="ff-step escrow">
                 <div className="ff-step-icon">🏦</div>
                 <div className="ff-step-name">Escrow Pool</div>
-                <div className="ff-step-amount">Locked</div>
+                <div className="ff-step-amount">
+                  {isInProgress || isCompleted ? 'Locked → Releasing' : 'Locked'}
+                </div>
               </div>
               <div className="ff-arrow">→</div>
               <div className="ff-step verify">
                 <div className="ff-step-icon">🤖</div>
                 <div className="ff-step-name">AI Verification</div>
-                <div className="ff-step-amount">Proof Check</div>
+                <div className="ff-step-amount">
+                  {isCompleted ? 'Verified ✓' : isInProgress ? 'In Progress' : 'Proof Check'}
+                </div>
               </div>
               <div className="ff-arrow">→</div>
-              <div className={`ff-step volunteer ${isCompleted ? 'paid' : ''}`}>
+              <div className={`ff-step volunteer ${releasedFund > 0 ? 'paid' : ''}`}>
                 <div className="ff-step-icon">🙋</div>
-                <div className="ff-step-name">{problem.volunteer.name}</div>
+                <div className="ff-step-name">
+                  {primaryVol?.name || problem.volunteer?.name || 'Volunteer'}
+                </div>
                 <div className="ff-step-amount">
-                  {isCompleted ? `Rs. ${(problem.funded * 0.5).toLocaleString()} PAID` : 'Pending'}
+                  {releasedFund > 0
+                    ? `Rs. ${releasedFund.toLocaleString()} ${isCompleted ? 'PAID' : 'PARTIAL'}`
+                    : 'Pending'}
                 </div>
               </div>
             </div>
@@ -194,13 +212,12 @@ export default function LedgerPage() {
               </div>
               {problem.ledgerEntries.map((entry) => {
                 const tc = TYPE_CONFIG[entry.type] || {}
-                const status = isCompleted && entry.type === 'RELEASE' ? 'PAID'
-                  : isCompleted && entry.type === 'DEPOSIT' ? 'PAID'
-                  : entry.status
+                // Dynamic status: PAID entries stay PAID; RESERVED entries downgrade if completed
+                const status = entry.status
                 return (
                   <div
                     key={entry.id}
-                    className={`tx-row ${status === 'PAID' ? 'tx-paid' : ''} ${status === 'PENDING' ? 'tx-pending' : ''}`}
+                    className={`tx-row ${status === 'PAID' ? 'tx-paid' : ''} ${status === 'RESERVED' ? 'tx-reserved' : ''} ${status === 'PENDING' ? 'tx-pending' : ''}`}
                   >
                     <span className="tx-from">{entry.from}</span>
                     <span className="tx-arrow">→</span>
@@ -236,10 +253,10 @@ export default function LedgerPage() {
             <div className="ts-icon-large">🛡️</div>
             <div>
               <h3 className="ts-heading">Why This Ledger Matters</h3>
-              <p className="ts-body">
-                Every rupee donated, every task reserved, and every payout is recorded here. 
-                No funds move without verified proof. No trust without transparency. 
-                CivicTrust ensures every stakeholder can see exactly where the money went.
+          <p className="ts-body">
+                Every rupee donated, every task reserved, and every payout is recorded here.
+                No funds move without verified proof. No trust without transparency.
+                FixLedger ensures every stakeholder can see exactly where the money went.
               </p>
             </div>
           </div>

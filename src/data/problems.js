@@ -12,20 +12,26 @@ export const problems = [
     afterImagePlaceholder: 'https://picsum.photos/seed/clean-street-after/700/420',
     funded: 5000,
     totalGoal: 5000,
+    // ── New fund tracking fields ──
+    reservedFund: 5000,
+    releasedFund: 0,
+    // ── Join / volunteer tracking ──
     joinedCount: 12,
-    displayStatus: 'Active',
+    volunteers: [
+      { id: 'v1', name: 'Ali', status: 'assigned', assignedFund: 5000, releasedFund: 0, remainingFund: 5000 },
+    ],
+    displayStatus: 'In Progress',
     task: 'Clean and remove all garbage from the street area and restore sanitation',
+    // legacy volunteer field kept for seed display
     volunteer: { name: 'Ali', role: 'Volunteer', rating: 4.5, completedTasks: 8 },
     donations: [
       { donor: 'Donor_A', amount: 3000, status: 'ESCROW', time: '2 days ago' },
       { donor: 'Donor_B', amount: 2000, status: 'ESCROW', time: '1 day ago' },
     ],
     ledgerEntries: [
-      { id: 'l1', from: 'Donor_A', to: 'Escrow Pool', amount: 3000, type: 'DEPOSIT', status: 'ESCROW', time: '2 days ago' },
-      { id: 'l2', from: 'Donor_B', to: 'Escrow Pool', amount: 2000, type: 'DEPOSIT', status: 'ESCROW', time: '1 day ago' },
-      { id: 'l3', from: 'Escrow Pool', to: 'Ali (Volunteer)', amount: 2500, type: 'RESERVE', status: 'RESERVED', time: 'Task taken' },
-      { id: 'l4', from: 'Escrow Pool', to: 'Ali (Volunteer)', amount: 2500, type: 'RELEASE', status: 'PENDING', time: 'After verification' },
-      { id: 'l5', from: 'Escrow Pool', to: 'Remaining Pool', amount: 2500, type: 'BALANCE', status: 'POOL', time: 'Ongoing' },
+      { id: 'l1', from: 'Donor_A',     to: 'Escrow Pool',      amount: 3000, type: 'DEPOSIT',  status: 'ESCROW',    time: '2 days ago' },
+      { id: 'l2', from: 'Donor_B',     to: 'Escrow Pool',      amount: 2000, type: 'DEPOSIT',  status: 'ESCROW',    time: '1 day ago' },
+      { id: 'l3', from: 'Escrow Pool', to: 'Ali (Volunteer)',   amount: 5000, type: 'RESERVE',  status: 'RESERVED',  time: 'Task taken' },
     ],
   },
   {
@@ -41,8 +47,14 @@ export const problems = [
     afterImagePlaceholder: 'https://picsum.photos/seed/fixed-road-clean/700/420',
     funded: 8000,
     totalGoal: 8000,
+    reservedFund: 0,
+    releasedFund: 8000,
     joinedCount: 27,
+    volunteers: [
+      { id: 'v2', name: 'Zara', status: 'completed', assignedFund: 8000, releasedFund: 8000, remainingFund: 0 },
+    ],
     displayStatus: 'Completed',
+    status: 'COMPLETED',
     task: 'Repair the burst water pipe, pump out the water, and restore the road',
     volunteer: { name: 'Zara', role: 'Volunteer', rating: 4.8, completedTasks: 14 },
     donations: [
@@ -50,11 +62,11 @@ export const problems = [
       { donor: 'Donor_D', amount: 3000, status: 'PAID', time: '4 days ago' },
     ],
     ledgerEntries: [
-      { id: 'l1', from: 'Donor_C', to: 'Escrow Pool', amount: 5000, type: 'DEPOSIT', status: 'PAID', time: '5 days ago' },
-      { id: 'l2', from: 'Donor_D', to: 'Escrow Pool', amount: 3000, type: 'DEPOSIT', status: 'PAID', time: '4 days ago' },
-      { id: 'l3', from: 'Escrow Pool', to: 'Zara (Volunteer)', amount: 4000, type: 'RESERVE', status: 'PAID', time: '3 days ago' },
-      { id: 'l4', from: 'Escrow Pool', to: 'Zara (Volunteer)', amount: 4000, type: 'RELEASE', status: 'PAID', time: '2 days ago' },
-      { id: 'l5', from: 'Escrow Pool', to: 'Community Pool', amount: 4000, type: 'BALANCE', status: 'POOL', time: '2 days ago' },
+      { id: 'l1', from: 'Donor_C',     to: 'Escrow Pool',    amount: 5000, type: 'DEPOSIT',     status: 'PAID',  time: '5 days ago' },
+      { id: 'l2', from: 'Donor_D',     to: 'Escrow Pool',    amount: 3000, type: 'DEPOSIT',     status: 'PAID',  time: '4 days ago' },
+      { id: 'l3', from: 'Escrow Pool', to: 'Zara (Volunteer)', amount: 8000, type: 'RESERVE',   status: 'PAID',  time: '3 days ago' },
+      { id: 'l4', from: 'Escrow Pool', to: 'Zara (Volunteer)', amount: 2400, type: 'RELEASE_30', status: 'PAID', time: '2 days ago' },
+      { id: 'l5', from: 'Escrow Pool', to: 'Zara (Volunteer)', amount: 5600, type: 'RELEASE_70', status: 'PAID', time: '1 day ago'  },
     ],
   },
   {
@@ -70,7 +82,10 @@ export const problems = [
     afterImagePlaceholder: 'https://picsum.photos/seed/lit-street-lights/700/420',
     funded: 3500,
     totalGoal: 3500,
+    reservedFund: 0,
+    releasedFund: 0,
     joinedCount: 8,
+    volunteers: [],
     displayStatus: 'Active',
     task: 'Repair and replace all 8 non-functional street lights in the block',
     volunteer: { name: 'Hassan', role: 'Technician', rating: 4.2, completedTasks: 5 },
@@ -81,11 +96,8 @@ export const problems = [
     ledgerEntries: [
       { id: 'l1', from: 'Donor_E', to: 'Escrow Pool', amount: 2000, type: 'DEPOSIT', status: 'ESCROW', time: '3 days ago' },
       { id: 'l2', from: 'Donor_F', to: 'Escrow Pool', amount: 1500, type: 'DEPOSIT', status: 'ESCROW', time: '2 days ago' },
-      { id: 'l3', from: 'Escrow Pool', to: 'Hassan (Volunteer)', amount: 1750, type: 'RESERVE', status: 'RESERVED', time: 'Task taken' },
-      { id: 'l4', from: 'Escrow Pool', to: 'Hassan (Volunteer)', amount: 1750, type: 'RELEASE', status: 'PENDING', time: 'After verification' },
-      { id: 'l5', from: 'Escrow Pool', to: 'Remaining Pool', amount: 1750, type: 'BALANCE', status: 'POOL', time: 'Ongoing' },
     ],
   },
-];
+]
 
-export const getProblemById = (id) => problems.find((p) => p.id === id);
+export const getProblemById = (id) => problems.find((p) => p.id === id)

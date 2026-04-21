@@ -4,7 +4,7 @@ import './Header.css'
 
 const ROLE_ICON = { volunteer: '🙋', organization: '🏢' }
 
-export default function Header({ onOpenSetup }) {
+export default function Header({ onOpenSetup, onDonate }) {
   const { user } = useApp()
 
   const handleShare = () => {
@@ -55,6 +55,14 @@ export default function Header({ onOpenSetup }) {
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
             Share
+          </button>
+
+          <button
+            className="btn btn-donate btn-sm"
+            onClick={onDonate}
+            id="btn-header-donate"
+          >
+            📚 Donate
           </button>
 
           {/* Identity pill — shows user name or Guest, click to edit */}

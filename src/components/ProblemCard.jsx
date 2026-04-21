@@ -51,24 +51,49 @@ export default function ProblemCard({ problem }) {
 
         <div className="card-divider" />
 
-        {/* Stats row */}
+        {/* Fund stats */}
         <div className="card-stats">
           <div className="stat-item funded">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/>
             </svg>
-            <span>Rs. {problem.funded.toLocaleString()} Funded</span>
+            <div className="stat-fund-group">
+              <span className="stat-fund-label">Required</span>
+              <span className="stat-fund-val">Rs. {problem.funded.toLocaleString()}</span>
+            </div>
           </div>
+
+          {/* Escrow / Released pill */}
+          {(problem.releasedFund > 0) ? (
+            <div className="stat-item released-pill">
+              <span className="stat-pill-dot green" />
+              <span>Rs. {problem.releasedFund.toLocaleString()} released</span>
+            </div>
+          ) : (
+            <div className="stat-item escrow-pill">
+              <span className="stat-pill-dot amber" />
+              <span>Escrow locked</span>
+            </div>
+          )}
+        </div>
+
+        {/* Social stats */}
+        <div className="card-social">
           <div className="stat-item joined">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
               <circle cx="9" cy="7" r="4"/>
               <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
             </svg>
-            <span>{problem.joinedCount} joined</span>
+            <span>{problem.joinedCount ?? 0} joined</span>
           </div>
-        </div>
-      </div>
+          {(problem.volunteers?.length > 0) && (
+            <div className="stat-item volunteers">
+              <span>🙋 {problem.volunteers.length} volunteer{problem.volunteers.length > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>{/* end card-social */}
+      </div>{/* end card-body */}
 
       {/* Footer CTA */}
       <div className="card-footer">

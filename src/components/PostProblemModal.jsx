@@ -52,15 +52,14 @@ export default function PostProblemModal({ onClose, onPosted }) {
     return errs
   }
 
-  // Build ledger data from the user-entered fund amount
+  // Build initial ledger from the user-entered fund amount
+  // Only DEPOSIT entries at creation time — RESERVE/RELEASE happen on actions
   const buildFundData = (funded, poster) => {
-    const half = Math.round(funded * 0.5)
     const donorA = `Donor_${String.fromCharCode(65 + Math.floor(Math.random() * 10))}`
     const donorB = `Donor_${String.fromCharCode(75 + Math.floor(Math.random() * 10))}`
     const amtA = Math.round(funded * 0.6)
     const amtB = funded - amtA
-    const volunteerName = poster || 'Volunteer'
-    const ts = new Date().toLocaleString('en-PK', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })
+    const time = new Date().toLocaleString('en-PK', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })
 
     return {
       donations: [
@@ -68,11 +67,8 @@ export default function PostProblemModal({ onClose, onPosted }) {
         { donor: donorB, amount: amtB, status: 'ESCROW', time: 'Just now' },
       ],
       ledgerEntries: [
-        { id: 'l1', from: donorA,   to: 'Escrow Pool',             amount: amtA,          type: 'DEPOSIT',  status: 'ESCROW',    time: ts },
-        { id: 'l2', from: donorB,   to: 'Escrow Pool',             amount: amtB,          type: 'DEPOSIT',  status: 'ESCROW',    time: ts },
-        { id: 'l3', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RESERVE',  status: 'RESERVED', time: 'Task taken' },
-        { id: 'l4', from: 'Escrow Pool', to: `${volunteerName} (Volunteer)`, amount: half, type: 'RELEASE',  status: 'PENDING',  time: 'After verification' },
-        { id: 'l5', from: 'Escrow Pool', to: 'Remaining Pool',     amount: funded - half, type: 'BALANCE',  status: 'POOL',     time: 'Ongoing' },
+        { id: 'l1', from: donorA, to: 'Escrow Pool', amount: amtA, type: 'DEPOSIT', status: 'ESCROW', time },
+        { id: 'l2', from: donorB, to: 'Escrow Pool', amount: amtB, type: 'DEPOSIT', status: 'ESCROW', time },
       ],
     }
   }
@@ -98,9 +94,14 @@ export default function PostProblemModal({ onClose, onPosted }) {
         category: form.category,
         beforeImage: imagePreview,
         afterImagePlaceholder: 'https://picsum.photos/seed/after-clean/700/420',
-        funded,                        // ← user-entered value
+        funded,
         totalGoal: funded,
-        joinedCount: 0,
+        // ── Escrow tracking ──
+        reservedFund: funded,
+        releasedFund: 0,
+        // ── Social tracking ──
+        joinedCount: 1,          // creator is first supporter
+        volunteers: [],
         displayStatus: 'Active',
         task: `Resolve the reported issue: ${form.title.trim()}`,
         volunteer: {

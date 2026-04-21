@@ -231,8 +231,9 @@
   letter-spacing: -0.01em;
 }
 .sum-value.accent { color: var(--accent); }
-.sum-value.green { color: var(--green); }
-.sum-value.blue { color: var(--blue); }
+.sum-value.green  { color: var(--green); }
+.sum-value.blue   { color: var(--blue); }
+.sum-value.amber  { color: var(--amber); }
 
 .lmc-sum-divider {
   width: 1px;

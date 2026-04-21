@@ -6,32 +6,37 @@ import HomePage from './pages/HomePage'
 import DetailPage from './pages/DetailPage'
 import LedgerPage from './pages/LedgerPage'
 import UserSetupModal from './components/UserSetupModal'
+import DonateModal from './components/DonateModal'
 import './App.css'
 
 // Inner component so it can access the context
 function AppInner() {
   const { user } = useApp()
-  // Auto-open setup modal on first visit (no user set)
   const [showSetup, setShowSetup] = useState(true)
+  const [showDonate, setShowDonate] = useState(false)
 
   return (
     <div className="app">
-      <Header onOpenSetup={() => setShowSetup(true)} />
+      <Header
+        onOpenSetup={() => setShowSetup(true)}
+        onDonate={() => setShowDonate(true)}
+      />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/problem/:id" element={<DetailPage />} />
+          <Route path="/" element={<HomePage onDonate={() => setShowDonate(true)} />} />
+          <Route path="/problem/:id" element={<DetailPage onDonate={() => setShowDonate(true)} />} />
           <Route path="/ledger" element={<LedgerPage />} />
         </Routes>
       </main>
 
-      {/* User Setup Modal — shows on first load, or when triggered from header */}
-      {showSetup && !user && (
+      {/* User Setup Modal */}
+      {showSetup && (
         <UserSetupModal onClose={() => setShowSetup(false)} />
       )}
-      {showSetup && user && (
-        // Re-edit identity when already set
-        <UserSetupModal onClose={() => setShowSetup(false)} />
+
+      {/* Donate Modal */}
+      {showDonate && (
+        <DonateModal onClose={() => setShowDonate(false)} />
       )}
     </div>
   )

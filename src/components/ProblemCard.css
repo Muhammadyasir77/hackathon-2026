@@ -160,3 +160,59 @@
 .problem-card:hover .card-cta-text {
   color: var(--accent);
 }
+
+/* ── Fund stat group (label + value stacked) ── */
+.stat-fund-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.stat-fund-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.stat-fund-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+/* ── Escrow / Released pill ── */
+.stat-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.stat-pill-dot.green { background: var(--green); }
+.stat-pill-dot.amber { background: var(--amber); animation: pulse-ring 2s ease infinite; }
+
+.stat-item.escrow-pill {
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 600;
+}
+.stat-item.released-pill {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Social stats row ── */
+.card-social {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-bottom: 4px;
+}
+
+.stat-item.volunteers {
+  color: var(--blue);
+  font-size: 12px;
+}
